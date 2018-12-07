@@ -17,24 +17,24 @@ from statsmodels import regression
 
 train_data = pd.read_csv('data/zhengqi_train.txt', '\t')
 test_data = pd.read_csv('data/zhengqi_test.txt', '\t')
-PCA_DATA, L = data_deal.PCA_Data()
+# PCA_DATA, L = data_deal.PCA_Data()
 train = np.asarray(train_data)
 train_value = train[: , 0: -1]
 train_pro = train[: , -1: ].ravel()
 train_pca_value = train_value
-train_pca_value = PCA_DATA.transform(train_value)
+# train_pca_value = PCA_DATA.transform(train_value)
 title = []
-del_i = [5, 6, 10, 13, 15]
+del_i = [14, 20]
 for i in range(len(train_pca_value[0])):
     if i not in del_i :
         title.append(i)
-print(title)
+# print(title)
 train_pca_value = train_pca_value[:, title]
 
 len_data = len(train_pro)
 test_data = np.array(test_data)
 test_pca_data = test_data
-test_pca_data = PCA_DATA.transform(test_data)
+# test_pca_data = PCA_DATA.transform(test_data)
 test_pca_data = test_pca_data[:, title]
 
 
@@ -123,12 +123,21 @@ def lassocv():
     lasso.fit(X_train, Y_train)
     pre = lasso.predict(X_test)
     loss = mean_squared_error(pre, Y_test)
+
     print(loss)
-    pre = lasso.predict(test_pca_data)
-    write = open('data/lasso.txt', 'w')
-    for i in range(len(pre)):
-        write.write ("%f\r"%pre[i])
-    write.close()
+    # print(lasso.coef_)
+    coef = lasso.coef_
+    for i in range(len(coef)):
+        if (coef[i] == 0):
+            print("%d\t%f"%(i, coef[i]))
+    # print(lasso.alpha_)
+    # print(lasso.dual_gap_)
+    # print(lasso.n_iter_)
+    # pre = lasso.predict(test_pca_data)
+    # write = open('data/lasso.txt', 'w')
+    # for i in range(len(pre)):
+    #     write.write ("%f\r"%pre[i])
+    # write.close()
 
 def elasticnet():
     elasticnet = ElasticNetCV()
@@ -190,8 +199,8 @@ def polyomial():
 if __name__ == '__main__':
     line()
     polyomial()
-    grad()
-    ridge()
-    lassocv()
-    lassolars()
-    elasticnet()
+    # grad()
+    # ridge()
+    # lassocv()
+    # lassolars()
+    # elasticnet()

@@ -13,24 +13,27 @@ train = np.asarray(train_data)
 train_value = train[: , 0: -1]
 train_pro = train[: , -1: ].ravel()
 train_pca_value = train_value
-train_pca_value = PCA_DATA.transform(train_value)
-print(len(train_pca_value[0]))
-title = []
-del_i = [5, 6, 10, 13, 15]
-for i in range(len(train_pca_value[0])):
-    if i not in del_i :
-        title.append(i)
-print(title)
-train_pca_value = train_pca_value[:, title]
+# train_pca_value = PCA_DATA.transform(train_value)
+# print(len(train_pca_value[0]))
+# title = []
+# del_i = [5, 6, 10, 13, 15]
+# for i in range(len(train_pca_value[0])):
+#     if i not in del_i :
+#         title.append(i)
+# print(title)
+# train_pca_value = train_pca_value[:, title]
 
 test_data = np.array(test_data)
 test_pca_data = test_data
-test_pca_data = PCA_DATA.transform(test_data)
-test_pca_data = test_pca_data[:, title].T
+# test_pca_data = PCA_DATA.transform(test_data)
+# test_pca_data = test_pca_data[:, title].T
+test_pca_data = test_pca_data.T
 
 if __name__ == '__main__':
     X_train, X_test, Y_train, Y_test = train_test_split(train_pca_value, train_pro, test_size=0.1, random_state=20)
+    # sm.OLS.fit_regularized(L1_wt=1)
     model = sm.OLS(Y_train, X_train)
+    result = model.fit_regularized()
     result = model.fit()
     print(result.params)
     print(result.summary())
