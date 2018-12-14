@@ -47,7 +47,7 @@ def data_():
 def loss(x, y):
     pre = net(x)
     losses = tf.reduce_mean(tf.square(y - pre))
-    train_step = tf.train.GradientDescentOptimizer(learning_rate=0.001).minimize(losses)
+    train_step = tf.train.GradientDescentOptimizer(learning_rate=0.0001).minimize(losses)
     # tf.add_to_collection('losses', tf.contrib.layers.l2_regularizer(regularizer)(w))
     return losses, train_step
 
@@ -77,9 +77,9 @@ def tain(del_i):
     with tf.Session() as sess:
         init = tf.global_variables_initializer()
         sess.run(init)
-        for i in range(10000):
+        for i in range(1000):
             # X_train, X_test, Y_train, Y_test = train_test_split(train_value, train_pro, test_size=0.1, random_state=i)
-            X_train, X_test, Y_train, Y_test = train_test_split(train_pca_value, train_pro, test_size=0.1, random_state=i)
+            X_train, X_test, Y_train, Y_test = train_test_split(train_pca_value, train_pro, test_size=0.2, random_state=i)
             # start = i * batch % len(X_train)
             # end = start + batch
             _,los = sess.run([step, losses], feed_dict={x: X_train, y: Y_train})
@@ -111,6 +111,6 @@ def lassocv_filter():
     return del_i
 
 if __name__ == '__main__':
-    # del_i = lassocv_filter()
-    del_i = None
+    del_i = lassocv_filter()
+    # del_i = None
     tain(del_i)
