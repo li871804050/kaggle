@@ -3,8 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-def data_deal():
-    data = pd.read_csv('data/happiness_train_abbr.csv', ',')
+def data_deal(path):
+    data = pd.read_csv(path, ',')
     data.drop(columns=['survey_time'], inplace=True)
     data.fillna(-1, inplace=True)
     # data.drop(columns=['survey_time'])
