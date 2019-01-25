@@ -31,9 +31,11 @@ def remove(data):
             data.drop(columns=[pro], inplace=True)
         else:
             print(pro)
-    data.fillna(-1, inplace=True)
-
-
+    # data.fillna(-1, inplace=True)
+    #缺失值处理
+    heads = data.columns.values.tolist()
+    for h in heads:
+        data[h].fillna(data[h].median(), inplace=True)
 
 def analyze_birth():
     birth = [2015 - x for x in data['birth']]
@@ -101,6 +103,7 @@ def analyze_income(data):
     draw_data_fq(income)
 
 def get_income_type(income):
+    # print(type(income), income)
     if income < 10000:
         return 0
     elif income >= 10000 and income < 50000:
