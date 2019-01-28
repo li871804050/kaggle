@@ -30,14 +30,3 @@ write = open('data/res_20190128.csv', 'w')
 for i in range(len(pred_test)):
     write.write('%s,%f\r'%(ids[i], pred_test[i]))
 write.close()
-
-
-# model = sm.OLS(train_y, train_x)
-# results = model.fit()
-# print(train_x.shape)
-# print(train_y.shape)
-# pred = model.predict(test_x)
-#
-# # print(test_x.shape, pred.shape)
-# loss = mean_squared_error(test_y, pred)
-# print(loss)
