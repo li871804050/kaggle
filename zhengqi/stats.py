@@ -5,6 +5,8 @@ import pandas as pd
 import numpy as np
 from zhengqi import data_deal
 from sklearn.model_selection import train_test_split
+from scipy.stats import anderson,normaltest
+from scipy import stats
 
 train_data = pd.read_csv('data/zhengqi_train.txt', '\t')
 test_data = pd.read_csv('data/zhengqi_test.txt', '\t')
@@ -32,13 +34,16 @@ test_pca_data = test_pca_data.T
 if __name__ == '__main__':
     X_train, X_test, Y_train, Y_test = train_test_split(train_pca_value, train_pro, test_size=0.1, random_state=20)
     # sm.OLS.fit_regularized(L1_wt=1)
-    model = sm.OLS(Y_train, X_train)
-    result = model.fit_regularized()
-    result = model.fit()
-    print(result.params)
-    print(result.summary())
-    pre_data = model.predict(test_pca_data)
-    write = open('data/stats.txt', 'w')
-    for i in range(len(pre_data[0])):
-        write.write("%f\r" % pre_data[0][i])
-    write.close()
+    # model = sm.OLS(Y_train, X_train)
+    # result = model.fit_regularized()
+    # result = model.fit()
+    # print(result.params)
+    # print(result.summary())
+    # pre_data = model.predict(test_pca_data)
+    # write = open('data/stats.txt', 'w')
+    # for i in range(len(pre_data[0])):
+    #     write.write("%f\r" % pre_data[0][i])
+    # write.close()
+    # print(anderson(Y_train, dist='norm'))
+    print(normaltest(train_pca_value, axis=0))
+    # print(stats.skewtest(train_pro))

@@ -1,27 +1,25 @@
-#encode=utf-8
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-train_data = pd.read_csv('data/zhengqi_train.txt', '\t')
-train_data = np.array(train_data)
-value = train_data[:, 0:-1]
-target = train_data[:, -1: ]
-
-def draw_feature(feature):
-    length = len(feature)
-    x_polt = range(length)
-    plt.plot(x_polt, feature)
+def draw_data(pro):
+    data = pd.read_csv('data/pm25_train.csv')
+    pm = data[pro]
+    x = range(len(pm))
+    plt.plot(x, pm)
     plt.show()
 
 def ana_data():
-    path = 'data/zhengqi_train.txt'
-    train = pd.read_csv(path, '\t')
-
+    data = pd.read_csv('data/pm25_train.csv')
+    columns = data.columns
+    columns = list(columns)
+    # columns.remove('date')
+    # columns.remove('hour')
     stats = []
-    for col in train.columns:
-        stats.append((col, train[col].nunique(), train[col].isnull().sum() * 100 / train.shape[0],
-                      train[col].value_counts(normalize=True, dropna=False).values[0] * 100, train[col].dtype))
+    for col in columns:
+        print(col)
+        stats.append((col, data[col].nunique(), data[col].isnull().sum() * 100 / data.shape[0],
+                      data[col].value_counts(normalize=True, dropna=False).values[0] * 100, data[col].dtype))
 
     stats_df = pd.DataFrame(stats, columns=['Feature', 'Unique_values', 'missing',
                                             'Percentage', 'type'])
@@ -35,4 +33,5 @@ def ana_data():
     print(stats_df)
 
 if __name__ == '__main__':
-    ana_data()
+    # ana_data()
+    draw_data('pm2.5')

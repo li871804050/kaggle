@@ -26,7 +26,7 @@ def data(del_i = None):
     train_pca_value = train_value
     # train_pca_value = PCA_DATA.transform(train_value)
     title = []
-    # del_i = [14, 20]
+    del_i = [27]
     for i in range(len(train_pca_value[0])):
         if del_i is None or i not in del_i :
             title.append(i)
@@ -92,4 +92,4 @@ def line():
 
 if __name__ == '__main__':
     line()
-    line_lasso()
+    # line_lasso()

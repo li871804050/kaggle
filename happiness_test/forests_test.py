@@ -7,16 +7,19 @@ from sklearn.externals.six import StringIO
 from IPython.display import Image
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
+from sklearn.metrics import accuracy_score
+
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import ExtraTreesClassifier
 import numpy as np
+from sklearn.ensemble import AdaBoostClassifier
+import datetime
 
-
-clf = RandomForestClassifier(n_estimators=35)
-
+time = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
 train_data = analyze_data.data_deal('data/happiness_train_complete.csv')
 data = np.asarray(train_data)
 pro = data[:, 2:]
 target = data[:, 1]
-clf = clf.fit(pro, target)
 
 test_data = analyze_data.data_deal('data/happiness_test_complete.csv')
 t_data = np.asarray(test_data)
@@ -26,19 +29,54 @@ test_pro = t_data[:, 1:]
 
 X_train, X_test, Y_train, Y_test = train_test_split(pro, target, test_size=0.1, random_state=9)
 
-clf = clf.fit(X_train, Y_train)
+#叶子节点所需的最小样本数
+min_leaf = 15
+max_depth = 20
+min_samples_split = 10
+# for max_depth in range(5, 30):
+#     for min_leaf in range(10, 30):
+clf = RandomForestClassifier(n_estimators=40, min_samples_leaf=min_leaf, max_depth=max_depth, min_samples_split=min_samples_split)
+clf.fit(X_train, Y_train)
 Y_PRED = clf.predict(X_test)
-loss = mean_squared_error(Y_PRED, Y_test)
-print(loss)
-
+# loss = mean_squared_error(Y_PRED, Y_test)
+# loss_socer = accuracy_score(Y_PRED, Y_test)
+# print(loss)
+# print(loss_socer)
+c = 0
+for i in range(len(Y_PRED)):
+    if Y_PRED[i] == Y_test[i]:
+        c += 1
+print(c/len(Y_PRED))
 # clf = clf.fit(pro, target)
 
-predicted = clf.predict(test_pro)
-write = open('data/result_random_tree_20190128_0.csv', 'w')
-write.write('id,happiness\r')
-# write2 = open('data/result_20190125_33.csv', 'w')
-for i in range(len(predicted)):
-    # print('%d,%d'%(ids[i][0], predicted[i]))
-    write.write('%d,%d\r'%(ids[i][0], predicted[i]))
-    # write2.write('%d\r'%predicted[i])
-write.close()
+
+# predicted = clf.predict(test_pro)
+# write = open('data/' + time + ".csv", 'w')
+# write.write('id,happiness\r')
+# # write2 = open('data/result_20190125_33.csv', 'w')
+# for i in range(len(predicted)):
+#     # print('%d,%d'%(ids[i][0], predicted[i]))
+#     write.write('%d,%d\r'%(ids[i][0], predicted[i]))
+#     # write2.write('%d\r'%predicted[i])
+# write.close()
+
+
+# for n_ne in range(10, 50):
+#     kn_clf = KNeighborsClassifier(n_neighbors=n_ne)
+#     kn_clf.fit(X_train, Y_train)
+#     Y_KN = kn_clf.predict(X_test)
+#     ckn = 0
+#     for i in range(len(Y_KN)):
+#         if Y_KN[i] == Y_test[i]:
+#             ckn += 1
+#     print(n_ne, ckn/len(Y_KN))
+
+ex_tree = ExtraTreesClassifier(n_estimators=50, min_samples_leaf=min_leaf, max_depth=max_depth, min_samples_split=min_samples_split)
+ex_tree.fit(X_train, Y_train)
+Y_EX = ex_tree.predict(X_test)
+cex = 0
+for i in range(len(Y_EX)):
+    if Y_EX[i] == Y_test[i]:
+        cex += 1
+
+print(cex/len(Y_EX))

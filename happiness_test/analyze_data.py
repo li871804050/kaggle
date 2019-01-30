@@ -8,6 +8,7 @@ def data_deal(path):
     data = pd.read_csv(path, ',', encoding='gbk')
 
     # data.drop(columns=['survey_time'])
+    data['BMI'] = get_BMI(data['height_cm'], data['weight_jin'])
     data['height_cm'] = [get_height_type(x) for x in data['height_cm']]
     data['weight_jin'] = [get_weight_type(x) for x in data['weight_jin']]
     data['income'] = [get_income_type(x) for x in data['income']]
@@ -19,6 +20,7 @@ def data_deal(path):
     data['f_birth'] = get_dis_birth(data['birth'], data['f_birth'])
     data['marital_1st'] = get_dis_birth(data['birth'], data['marital_1st'])
     data['marital_now'] = get_dis_birth(data['birth'], data['marital_now'])
+
     # data['m_birth'] = get_dis_birth(data['birth'], data['m_birth'])
     data['birth'] = [get_age_type(x) for x in data['birth']]
     remove(data)
@@ -46,7 +48,7 @@ def birth_deal(birth, o_birth):
 
 def remove(data):
     list = ['province', 'city', 'county', 'survey_time', 'edu_other', 'edu_yr',
-            'join_party', 'property_0', 'property_1', 'property_2', 'property_3',
+            'join_party', 'property_0', 'property_2', 'property_3',
             'property_4', 'property_5', 'property_6', 'property_7', 'property_8',
             'property_other','invest_other']
     # del_null = ['edu_other', 'join_party', 'property_other', 'invest_other']
@@ -160,16 +162,16 @@ def get_service_type(data):
 
 
 def ana_data():
-    list = ['province', 'city', 'county', 'survey_time', 'edu_other', 'edu_yr',
-            'join_party', 'property_0', 'property_1', 'property_2', 'property_3',
-            'property_4', 'property_5', 'property_6', 'property_7', 'property_8',
-            'property_other', 'health_problem', 'marital_1st', 'marital_now',
-            'invest_other']
+    # list = ['province', 'city', 'county', 'survey_time', 'edu_other', 'edu_yr',
+    #         'join_party',
+    #         # 'property_4', 'property_5', 'property_6', 'property_7', 'property_8','property_0', 'property_2', 'property_3',
+    #         'property_other', 'invest_other']
 
     path = 'data/happiness_train_complete.csv'
     train = pd.read_csv(path, ',', encoding='gbk')
+    head = train.columns
     stats = []
-    for col in list:
+    for col in head:
         stats.append((col, train[col].nunique(), train[col].isnull().sum() * 100 / train.shape[0],
                       train[col].value_counts(normalize=True, dropna=False).values[0] * 100, train[col].dtype))
 
@@ -184,7 +186,31 @@ def ana_data():
     pd.set_option('max_colwidth', 100)
     print(stats_df)
 
-# if __name__ == '__main__':
-#     path = 'data/happiness_train_complete.csv'
-#     data = pd.read_csv(path, ',', encoding='gbk')
-#     print(data['marital_now'])
+def get_BMI(heighs, weights):
+    list = []
+    for i in range(len(heighs)):
+        weight = weights[i]/2
+        heigh = heighs[i]/100
+        # print(weight, heigh)
+        if heigh == 0:
+            list.append(-1)
+            continue
+        bmi = weight/(heigh*heigh)
+        if bmi < 18.5:
+            list.append(0)
+        elif bmi < 25:
+            list.append(1)
+        elif bmi < 30:
+            list.append(2)
+        elif bmi < 35:
+            list.append(3)
+        else:
+            list.append(4)
+    # print(list)
+    return list
+
+if __name__ == '__main__':
+    path = 'data/happiness_train_complete.csv'
+    data = pd.read_csv(path, ',', encoding='gbk')
+    print(data['property_1'])
+    # ana_data()
