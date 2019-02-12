@@ -30,8 +30,9 @@ def ana_data():
     pd.set_option('display.max_rows', None)
     # 设置value的显示长度为100，默认为50
     pd.set_option('max_colwidth', 100)
-    print(stats_df)
+    # print(stats_df)
+    print(data.describe())
 
 if __name__ == '__main__':
-    # ana_data()
-    draw_data('pm2.5')
+    ana_data()
+    # draw_data('pm2.5')

@@ -34,7 +34,7 @@ def line_regression():
     Y_P = clf.predict(X_T)
     loss = mean_squared_error(Y_P, Y_T)
     print(len(Y_T))
-    print(Y_P)
+    print(loss)
 
 if __name__ == '__main__':
     # line_stas()
