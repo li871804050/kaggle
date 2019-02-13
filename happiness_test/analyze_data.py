@@ -29,10 +29,22 @@ def data_deal(path):
 
     # data['m_birth'] = get_dis_birth(data['birth'], data['m_birth'])
     data['birth'] = [get_age_type(x) for x in data['birth']]
-    # data['s_birth'] = [get_age_type(x) for x in data['s_birth']]
-    # data['f_birth'] = [get_age_type(x) for x in data['f_birth']]
-    # data['m_birth'] = [get_age_type(x) for x in data['m_birth']]
-    remove(data)
+    data['s_birth'] = [get_age_type(x) for x in data['s_birth']]
+    data['f_birth'] = [get_age_type(x) for x in data['f_birth']]
+    data['m_birth'] = [get_age_type(x) for x in data['m_birth']]
+    # remove(data)
+    drop_list = ['edu_other', 'join_party', 'property_other', 'invest_other', 'survey_time',
+                 'nationality', 'religion', 'religion_freq', 'edu_other', 'political', 'floor_area',
+                 'property_0', 'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6',
+                 'property_7', 'property_8',
+                 'invest_0', 'invest_1', 'invest_2', 'invest_3', 'invest_4', 'invest_5', 'invest_6', 'invest_7',
+                 'invest_8',
+                 'insur_1', 'insur_2', 'insur_3', 'insur_4',
+                 'f_political', 'm_political', 's_political'
+                 ]
+    data.drop(columns=drop_list, inplace=True)
+
+    data.fillna(-3, inplace=True)
     for i in range(1, 10):
         str_name = 'public_service_' + str(i)
         data[str_name] = [get_service_type(x) for x in data[str_name]]
@@ -84,9 +96,8 @@ def birth_deal(birth, o_birth):
 
 
 def remove(data):
-    list = ['province', 'city', 'county', 'survey_time', 'edu_other', 'edu_yr',
-            'join_party',
-            # 'property_4', 'property_5', 'property_6', 'property_7', 'property_8','property_0', 'property_2', 'property_3',
+    list = ['id','province', 'city', 'county', 'survey_time', 'edu_other', 'edu_yr', 'join_party',
+            'property_0', 'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8',
             'property_other','invest_other']
     # del_null = ['edu_other', 'join_party', 'property_other', 'invest_other']
     # new_deal = ['marital_1st', 'marital_now', 'health_problem']
@@ -103,8 +114,10 @@ def remove(data):
     #     #     data[h].fillna(data[h].median(), inplace=True)
 
 def get_age_type(age):
-    if (age < 0):
+    if age < 0:
         return age
+    elif pd.isna(age):
+        return 100
     age = 2015 - age
     if age < 25:
         return 0
@@ -122,6 +135,8 @@ def get_age_type(age):
         return 6
 
 def get_height_type(heigh):
+    if pd.isna(heigh):
+        return -1
     if heigh < 0:
         return heigh
     if heigh <= 150:
@@ -132,6 +147,9 @@ def get_height_type(heigh):
         return (heigh - 150)//5 + 1
 
 def get_weight_type(weigh):
+    if pd.isna(weigh):
+        return -1
+
     if weigh < 0:
         return weigh
 
@@ -144,7 +162,11 @@ def get_weight_type(weigh):
 
 def get_income_type(income):
     # print(type(income), income)
+    if pd.isna(income):
+        return -1
     if income < 0:
+        return income
+    if income < 10:
         return income
     if income <= 3000:
         return 0
@@ -196,6 +218,10 @@ def get_BMI(heighs, weights):
     heighs = np.asarray(heighs)
     weights = np.asarray(weights)
     for i in range(len(heighs)):
+        # if pd.isna(weight[i]) or pd.isna(heighs[i]):
+        #     list.append(-1)
+        #     continue
+
         weight = weights[i]/2
         heigh = heighs[i]/100
         if heigh == 0:

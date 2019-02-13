@@ -1,3 +1,4 @@
+from boruta import BorutaPy
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.datasets import load_iris
 from sklearn import tree
@@ -34,41 +35,51 @@ if __name__ == '__main__':
     time = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
     train_data = analyze_data.data_deal('data/happiness_train_complete.csv')
     data = np.asarray(train_data)
-    test = data[0:100, :]
-    pro = data[100:, 2:]
-    target = data[100:, 1]
+    pro = data[:, 2:]
+    target = data[:, 1]
 
     test_data = analyze_data.data_deal('data/happiness_test_complete.csv')
     t_data = np.asarray(test_data)
     print(len(data[0]))
-    ids = t_data[:,0:1]
+    ids = t_data[:, 0:1]
     test_pro = t_data[:, 1:]
 
     X_train, X_test, Y_train, Y_test = train_test_split(pro, target, test_size=0.1, random_state=9)
 
     #叶子节点所需的最小样本数
     min_leaf = 15
-    max_depth = 40
+    max_depth = 11
     min_samples_split = 5
     # for max_depth in range(5, 30):
     #     for min_leaf in range(10, 30):
     clf = RandomForestClassifier(n_estimators=30, min_samples_leaf=min_leaf, max_depth=max_depth, min_samples_split=min_samples_split)
-    # clf = RandomForestClassifier()
+
+    feature_ = BorutaPy(clf, n_estimators='auto', verbose=2, random_state=1, max_iter=max_depth)
+
+    feature_.fit(X_train, Y_train)
+    X_train = feature_.transform(X_train)
+    X_test = feature_.transform(X_test)
+    test_pro = feature_.transform(test_pro)
+
     clf.fit(X_train, Y_train)
+
+
     Y_PRED = clf.predict(X_test)
     loss = mean_squared_error(Y_PRED, Y_test)
     loss_socer = accuracy_score(Y_PRED, Y_test)
     print(loss)
     print(loss_socer)
-    c = 0
-    for i in range(len(Y_PRED)):
-        # if Y_PRED[i] == Y_test[i]:
-        c += pow(Y_PRED[i] - Y_test[i], 2)
-    print(c/len(Y_PRED))
+    # c = 0
+    # for i in range(len(Y_PRED)):
+    #     # if Y_PRED[i] == Y_test[i]:
+    #     c += pow(Y_PRED[i] - Y_test[i], 2)
+    # print(c/len(Y_PRED))
     # clf = clf.fit(pro, target)
 
 
+
     predicted = clf.predict(test_pro)
+
     write = open('data/' + time + ".csv", 'w')
     write.write('id,happiness\r')
     # write2 = open('data/result_20190125_33.csv', 'w')
