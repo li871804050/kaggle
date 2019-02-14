@@ -44,14 +44,17 @@ if __name__ == '__main__':
     ids = t_data[:, 0:1]
     test_pro = t_data[:, 1:]
 
-    X_train, X_test, Y_train, Y_test = train_test_split(pro, target, test_size=0.1, random_state=9)
+
 
     #叶子节点所需的最小样本数
+    # write = open('data/boruta' + time + ".csv", 'w')
+    # for i in range(10, 100):
     min_leaf = 15
-    max_depth = 11
+    max_depth = 62
     min_samples_split = 5
     # for max_depth in range(5, 30):
     #     for min_leaf in range(10, 30):
+    X_train, X_test, Y_train, Y_test = train_test_split(pro, target, test_size=0.1, random_state=9)
     clf = RandomForestClassifier(n_estimators=30, min_samples_leaf=min_leaf, max_depth=max_depth, min_samples_split=min_samples_split)
 
     feature_ = BorutaPy(clf, n_estimators='auto', verbose=2, random_state=1, max_iter=max_depth)
@@ -69,12 +72,14 @@ if __name__ == '__main__':
     loss_socer = accuracy_score(Y_PRED, Y_test)
     print(loss)
     print(loss_socer)
-    # c = 0
-    # for i in range(len(Y_PRED)):
-    #     # if Y_PRED[i] == Y_test[i]:
-    #     c += pow(Y_PRED[i] - Y_test[i], 2)
-    # print(c/len(Y_PRED))
-    # clf = clf.fit(pro, target)
+    #     write.write('%d,%f,%f\r'%(i,loss,loss_socer))
+    # write.close()
+        # c = 0
+        # for i in range(len(Y_PRED)):
+        #     # if Y_PRED[i] == Y_test[i]:
+        #     c += pow(Y_PRED[i] - Y_test[i], 2)
+        # print(c/len(Y_PRED))
+        # clf = clf.fit(pro, target)
 
 
 

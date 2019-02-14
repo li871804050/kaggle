@@ -48,7 +48,7 @@ if __name__ == '__main__':
 
     #叶子节点所需的最小样本数
     min_leaf = 15
-    max_depth = 40
+    max_depth = 62
     min_samples_split = 5
     # for max_depth in range(5, 30):
     #     for min_leaf in range(10, 30):

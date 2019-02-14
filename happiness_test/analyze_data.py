@@ -96,7 +96,7 @@ def birth_deal(birth, o_birth):
 
 
 def remove(data):
-    list = ['id','province', 'city', 'county', 'survey_time', 'edu_other', 'edu_yr', 'join_party',
+    list = ['province', 'city', 'county', 'survey_time', 'edu_other', 'edu_yr', 'join_party',
             'property_0', 'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6', 'property_7', 'property_8',
             'property_other','invest_other']
     # del_null = ['edu_other', 'join_party', 'property_other', 'invest_other']
