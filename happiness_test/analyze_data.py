@@ -179,9 +179,9 @@ def get_income_type(income):
     elif income <= 40000:
         return 4
     elif income <= 600000:
-        return 5
-    else:
         return 6
+    else:
+        return 7
 def get_service_type(data):
     if data < 0:
         return data

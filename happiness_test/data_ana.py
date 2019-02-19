@@ -6,7 +6,7 @@ def read_data(path):
     if 'happiness' in data.columns:
         data = data[~data['happiness'].isin([-8, -3, -2, -1])]
 
-    drop_list = ['id', 'edu_other', 'join_party', 'property_other', 'invest_other', 'survey_time',
+    drop_list = ['edu_other', 'join_party', 'property_other', 'invest_other', 'survey_time',
                  'nationality', 'religion', 'religion_freq', 'edu_other', 'political', 'floor_area',
                  'property_0', 'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6',
                  'property_7', 'property_8',

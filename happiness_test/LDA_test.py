@@ -51,19 +51,25 @@ if __name__ == '__main__':
     # write = open('data/boruta' + time + ".csv", 'w')
     # for i in range(10, 100):
     min_leaf = 15
-    max_depth = 40
+    max_depth = 30
     min_samples_split = 5
     # for max_depth in range(5, 30):
     #     for min_leaf in range(10, 30):
     X_train, X_test, Y_train, Y_test = train_test_split(pro, target, test_size=0.1, random_state=9)
-    clf = RandomForestClassifier(n_estimators=30, min_samples_leaf=min_leaf, max_depth=max_depth, min_samples_split=min_samples_split)
 
-    # feature_ = BorutaPy(clf, n_estimators='auto', verbose=2, random_state=1, max_iter=max_depth)
-    #
-    # feature_.fit(X_train, Y_train)
-    # X_train = feature_.transform(X_train)
-    # X_test = feature_.transform(X_test)
-    # test_pro = feature_.transform(test_pro)
+    clf = RandomForestClassifier(n_estimators=30, min_samples_leaf=min_leaf, max_depth=max_depth, min_samples_split=min_samples_split)
+    feature_ = LinearDiscriminantAnalysis(n_components=5)
+    feature_.fit(X_train, Y_train)
+    X_train = feature_.transform(X_train)
+    X_test = feature_.transform(X_test)
+    test_pro = feature_.transform(test_pro)
+
+
+    feature_ = BorutaPy(clf, n_estimators='auto', verbose=2, random_state=1, max_iter=max_depth)
+    feature_.fit(X_train, Y_train)
+    X_train = feature_.transform(X_train)
+    X_test = feature_.transform(X_test)
+    test_pro = feature_.transform(test_pro)
 
     clf.fit(X_train, Y_train)
     Y_PRED = clf.predict(X_test)
