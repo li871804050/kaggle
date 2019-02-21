@@ -104,9 +104,9 @@ if __name__ == '__main__':
     #     for j in range(10, 40):
     min_leaf = 18
     max_depth = 14
-    min_samples_split = 5
-    clf = RandomForestClassifier(n_estimators=30, min_samples_leaf=min_leaf, max_depth=max_depth,
-                                 min_samples_split=min_samples_split)
+    min_samples_split = 10
+    clf = RandomForestClassifier(n_estimators=50, min_samples_leaf=min_leaf, max_depth=max_depth,
+                                 min_samples_split=min_samples_split, oob_score=True)
     feature_ = BorutaPy(clf, n_estimators='auto', verbose=2, random_state=1, max_iter=max_depth)
     X_train, X_test, Y_train, Y_test = train_test_split(pro, target, test_size=0.1, random_state=9)
     X_train, Y_train = LOF_test(X_train, Y_train, 7)
