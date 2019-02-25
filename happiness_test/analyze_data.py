@@ -2,18 +2,20 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+from happiness_test import k_means_test
 
 
 def data_deal(path):
     data = pd.read_csv(path, ',', encoding='gbk')
-
     # data.drop(columns=['survey_time'])
-    if 'happiness' in data.columns:
-        data = data[~data['happiness'].isin([-8, -3, -2, -1])]
+
         # data_3 = data[data['happiness'].isin([1])]
         # data = pd.concat([data, data_3, data_3, data_3])
         # data_3 = data[data['happiness'].isin([2])]
         # data = pd.concat([data, data_3])
+    # data['HW'] = k_means_test.H_W_model(data, 10)
+    # data['INCOME'] = k_means_test.income_model(data, 10)
+    # data['BIRTH'] = k_means_test.age_model(data, 10)
     data['BMI'] = get_BMI(data['height_cm'], data['weight_jin'])
     data['height_cm'] = [get_height_type(x) for x in data['height_cm']]
     data['weight_jin'] = [get_weight_type(x) for x in data['weight_jin']]
@@ -26,13 +28,15 @@ def data_deal(path):
     data['f_b'] = get_dis_birth(data['birth'], data['f_birth'])
     data['marital_1st'] = get_dis_birth(data['birth'], data['marital_1st'])
     data['marital_now'] = get_dis_birth(data['birth'], data['marital_now'])
-
-    # data['m_birth'] = get_dis_birth(data['birth'], data['m_birth'])
+    data['m_birth'] = get_dis_birth(data['birth'], data['m_birth'])
     data['birth'] = [get_age_type(x) for x in data['birth']]
     data['s_birth'] = [get_age_type(x) for x in data['s_birth']]
     data['f_birth'] = [get_age_type(x) for x in data['f_birth']]
     data['m_birth'] = [get_age_type(x) for x in data['m_birth']]
+
     # remove(data)
+    if 'happiness' in data.columns:
+        data = data[~data['happiness'].isin([-8, -3, -2, -1])]
     drop_list = ['edu_other', 'join_party', 'property_other', 'invest_other', 'survey_time',
                  'nationality', 'religion', 'religion_freq', 'edu_other', 'political', 'floor_area',
                  'property_0', 'property_1', 'property_2', 'property_3', 'property_4', 'property_5', 'property_6',
@@ -40,7 +44,8 @@ def data_deal(path):
                  'invest_0', 'invest_1', 'invest_2', 'invest_3', 'invest_4', 'invest_5', 'invest_6', 'invest_7',
                  'invest_8',
                  'insur_1', 'insur_2', 'insur_3', 'insur_4',
-                 'f_political', 'm_political', 's_political'
+                 'f_political', 'm_political', 's_political',
+                 # 'm_birth','f_birth','s_birth','birth','s_income','family_income','income','height_cm','weight_jin',
                  ]
     data.drop(columns=drop_list, inplace=True)
 

@@ -34,6 +34,13 @@ if __name__ == '__main__':
     time = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
     train_data = analyze_data.data_deal('data/happiness_train_complete.csv')
     data = np.asarray(train_data)
+    print(data.shape)
+    datas = []
+    for d in data:
+        if d not in datas:
+            datas.append(d)
+    data = np.asarray(datas)
+    print(data.shape)
     test = data[0:100, :]
     pro = data[100:, 2:]
     target = data[100:, 1]

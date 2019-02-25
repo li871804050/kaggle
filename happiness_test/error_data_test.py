@@ -90,6 +90,17 @@ if __name__ == '__main__':
     train_data = analyze_data.data_deal('data/happiness_train_complete.csv')
     data = np.asarray(train_data)
 
+    print(data.shape)
+    # keys = []
+    # datas = []
+    # for d in range(len(data)):
+    #     key = str(data[d])
+    #     if key not in keys:
+    #         datas.append(data[d])
+    #         keys.append(key)
+    # data = np.asarray(datas)
+    # print(data.shape)
+
     pro = data[:, 2:]
     target = data[:, 1]
 
