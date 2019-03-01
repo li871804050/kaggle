@@ -77,7 +77,7 @@ def tain(del_i):
     with tf.Session() as sess:
         init = tf.global_variables_initializer()
         sess.run(init)
-        for i in range(1000):
+        for i in range(1000000):
             # X_train, X_test, Y_train, Y_test = train_test_split(train_value, train_pro, test_size=0.1, random_state=i)
             X_train, X_test, Y_train, Y_test = train_test_split(train_pca_value, train_pro, test_size=0.2, random_state=i)
             # start = i * batch % len(X_train)

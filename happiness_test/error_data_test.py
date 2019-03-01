@@ -20,6 +20,10 @@ from sklearn.ensemble import ExtraTreesClassifier
 import numpy as np
 from sklearn.ensemble import AdaBoostClassifier
 import datetime
+import os
+import pydotplus
+
+os.environ['PATH'] += os.pathsep + 'D:/Program Files (x86)/Graphviz2.38/bin'
 
 
 def combain(x, y, z, t):
@@ -114,17 +118,17 @@ if __name__ == '__main__':
     # for i in range(10, 30):
     #     for j in range(10, 40):
     min_leaf = 18
-    max_depth = 14
+    max_depth = 17
     min_samples_split = 10
     clf = RandomForestClassifier(n_estimators=50, min_samples_leaf=min_leaf, max_depth=max_depth,
                                  min_samples_split=min_samples_split, oob_score=True)
-    feature_ = BorutaPy(clf, n_estimators='auto', verbose=2, random_state=1, max_iter=max_depth)
+    # feature_ = BorutaPy(clf, n_estimators='auto', verbose=2, random_state=1, max_iter=max_depth)
     X_train, X_test, Y_train, Y_test = train_test_split(pro, target, test_size=0.1, random_state=9)
-    X_train, Y_train = LOF_test(X_train, Y_train, 7)
-    feature_.fit(X_train, Y_train)
-    X_train = feature_.transform(X_train)
-    X_test = feature_.transform(X_test)
-    test_pro = feature_.transform(test_pro)
+    # X_train, Y_train = LOF_test(X_train, Y_train, 7)
+    # feature_.fit(X_train, Y_train)
+    # X_train = feature_.transform(X_train)
+    # X_test = feature_.transform(X_test)
+    # test_pro = feature_.transform(test_pro)
 
     clf.fit(X_train, Y_train)
     Y_PRED = clf.predict(X_test)
@@ -135,7 +139,10 @@ if __name__ == '__main__':
 
     #         write.write('%d,%d,%f,%f\r'%(i,j,loss,loss_socer))
     # write.close()
-
+    target_name = ['Class1', 'Class2', 'Class3', 'Class4', 'Class5']
+    dot_data = tree.export_graphviz(clf.estimators_[0], class_names= target_name, out_file='tree.dot')
+    (graph,) = pydot.graph_from_dot_file('tree.dot')
+    graph.write_png('tree_from_forest5.png')
 
 
 

@@ -13,7 +13,12 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import ExtraTreesClassifier
 import numpy as np
 from sklearn.ensemble import AdaBoostClassifier
+from sklearn import tree
 import datetime
+import os
+import pydotplus
+
+os.environ['PATH'] += os.pathsep + 'D:/Program Files (x86)/Graphviz2.38/bin'
 
 
 def combain(x, y, z, t):
@@ -36,11 +41,11 @@ if __name__ == '__main__':
     data = np.asarray(train_data)
     print(data.shape)
     datas = []
-    for d in data:
-        if d not in datas:
-            datas.append(d)
-    data = np.asarray(datas)
-    print(data.shape)
+    # for d in data:
+    #     if d not in datas:
+    #         datas.append(d)
+    # data = np.asarray(datas)
+    # print(data.shape)
     test = data[0:100, :]
     pro = data[100:, 2:]
     target = data[100:, 1]
@@ -73,6 +78,15 @@ if __name__ == '__main__':
         c += pow(Y_PRED[i] - Y_test[i], 2)
     print(c/len(Y_PRED))
     # clf = clf.fit(pro, target)
+
+    # dot_data = tree.export_graphviz(clf, feature_names=train_data.columns[2: ],
+    #                                     class_names = target,filled = True,rounded = True,
+    #                                     special_characters = True)
+    # graph = pydotplus.graph_from_dot_data(dot_data)
+    # # 使用ipython的终端jupyter notebook显示。
+    # Image(graph.create_png())
+    # # 如果没有ipython的jupyter notebook，可以把此图写到pdf文件里，在pdf文件里查看。
+    # graph.write_pdf("data/iris.pdf")
 
 
     predicted = clf.predict(test_pro)
