@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     #数组拷贝 需使用copy()
     a = arr[1]
-    b = arr[1].copy()
+    b = arr[1][:]
     print(a, b)
     arr[1] = 0
     print(a, b)

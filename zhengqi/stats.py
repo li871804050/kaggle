@@ -39,7 +39,7 @@ if __name__ == '__main__':
     # result = model.fit()
     # result = model.fit()
 
-    resid = result.resid_deviance.copy()
+    resid = result.resid_deviance[:]
     # print(resid)
 
     # print(model.df_resid)

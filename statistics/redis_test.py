@@ -19,9 +19,9 @@ print('Parameters: ', res.params)
 print('T-values: ', res.tvalues)
 
 means = data.exog.mean(axis=0)
-means25 = means.copy()
+means25 = means[:]
 means25[0] = stats.scoreatpercentile(data.exog[:,0], 25)
-means75 = means.copy()
+means75 = means[:]
 means75[0] = lowinc_75per = stats.scoreatpercentile(data.exog[:,0], 75)
 resp_25 = res.predict(means25)
 resp_75 = res.predict(means75)
@@ -45,7 +45,7 @@ ax.set_xlabel('Fitted values')
 
 fig, ax = plt.subplots()
 
-resid = res.resid_deviance.copy()
+resid = res.resid_deviance[:]
 resid_std = stats.zscore(resid)
 ax.hist(resid_std, bins=25)
 ax.set_title('Histogram of standardized deviance residuals')

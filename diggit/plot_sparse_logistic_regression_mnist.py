@@ -62,7 +62,7 @@ score = clf.score(X_test, y_test)
 print("Sparsity with L1 penalty: %.2f%%" % sparsity)
 print("Test score with L1 penalty: %.4f" % score)
 
-coef = clf.coef_.copy()
+coef = clf.coef_[:]
 plt.figure(figsize=(10, 5))
 scale = np.abs(coef).max()
 for i in range(10):
