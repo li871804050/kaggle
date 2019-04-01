@@ -1,6 +1,3 @@
-import math
-
-
 def get_cover(queries, data):
     print(data)
     if len(queries) > 0:
