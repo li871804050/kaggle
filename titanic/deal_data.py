@@ -1,68 +1,77 @@
-#encode=utf-8
-#数据处理 数据填充 重要特征选取
-
-
 import numpy as np
 import pandas as pd
-from pandas import Series,DataFrame
-from sklearn.linear_model import LogisticRegression
-from sklearn import model_selection
-from sklearn.ensemble import RandomForestClassifier
+import seaborn as sns
+import matplotlib.pyplot as plt
 
-data_train = pd.read_csv('data/titanic_train.csv', ',')
-data_train["Age"] = data_train['Age'].fillna(data_train['Age'].median())
-data_train.loc[data_train["Sex"] == "male","Sex"] = 0
-data_train.loc[data_train["Sex"] == "female","Sex"] = 1
-#缺失值用最多的S进行填充
-data_train["Embarked"] = data_train["Embarked"].fillna('S')
-#地点用0,1,2
-data_train.loc[data_train["Embarked"] == "S","Embarked"] = 0
-data_train.loc[data_train["Embarked"] == "C","Embarked"] = 1
-data_train.loc[data_train["Embarked"] == "Q","Embarked"] = 2
-data_test = pd.read_csv('data/titanic_test.csv', ',')
-# df_train = DataFrame(data_train)
-# df_test = DataFrame(data_test)
+train = pd.read_csv('data/train.csv')
+test = pd.read_csv('data/test.csv')
 
-def logisit():
-    # print(data_train.info())
-    Log = LogisticRegression()
-    predictors = ["Pclass", "Age", "SibSp", "Parch", "Fare"]
-    predictors = ["Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Embarked"]
-    re = Log.fit(data_train[predictors], data_train['Survived'])
-    scroes = model_selection.cross_val_score(Log, data_train[predictors], data_train['Survived'], cv=3)
-    print(scroes.mean())
-    data_test["Age"] = data_test["Age"].fillna(data_test["Age"].median())
-    # Fare列中的缺失值用Fare最大值进行填充
-    data_test["Fare"] = data_test["Fare"].fillna(data_test["Fare"].max())
+test['Survived'] = 0
+train_test = train.append(test)
 
-    # Sex性别列处理：male用0，female用1
-    data_test.loc[data_test["Sex"] == "male", "Sex"] = 0
-    data_test.loc[data_test["Sex"] == "female", "Sex"] = 1
-    # 缺失值用最多的S进行填充
-    data_test["Embarked"] = data_test["Embarked"].fillna('S')
-    # 地点用0,1,2
-    data_test.loc[data_test["Embarked"] == "S", "Embarked"] = 0
-    data_test.loc[data_test["Embarked"] == "C", "Embarked"] = 1
-    data_test.loc[data_test["Embarked"] == "Q", "Embarked"] = 2
 
-    test_features = ["Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Embarked"]
-    # 构造测试集的Survived列，
-    data_test["Survived"] = -1
+#将拥有不同值的变量转换为0/1数值 分类变量数组化
+train_test = pd.get_dummies(train_test,columns=['Pclass'])
+train_test = pd.get_dummies(train_test,columns=["Sex"])
+train_test['SibSp_Parch'] = train_test['SibSp'] + train_test['Parch']
+train_test = pd.get_dummies(train_test,columns = ['SibSp','Parch','SibSp_Parch'])
+train_test = pd.get_dummies(train_test,columns=["Embarked"])
 
-    test_predictors = data_test[test_features]
-    data_test["Survived"] = re.predict(test_predictors)
-    print(data_test["Survived"])
+#从名字中提取出称呼： df['Name].str.extract()是提取函数,配合正则一起使用
+train_test['Name1'] = train_test['Name'].str.extract('.+,(.+)', expand=False).str.extract('^(.+?)\.', expand=False).str.strip()
+#将姓名分类处理()
+train_test['Name1'].replace(['Capt', 'Col', 'Major', 'Dr', 'Rev'], 'Officer' , inplace = True)
+train_test['Name1'].replace(['Jonkheer', 'Don', 'Sir', 'the Countess', 'Dona', 'Lady'], 'Royalty' , inplace = True)
+train_test['Name1'].replace(['Mme', 'Ms', 'Mrs'], 'Mrs')
+train_test['Name1'].replace(['Mlle', 'Miss'], 'Miss')
+train_test['Name1'].replace(['Mr'], 'Mr' , inplace = True)
+train_test['Name1'].replace(['Master'], 'Master' , inplace = True)
+train_test = pd.get_dummies(train_test,columns=['Name1'])
+#从姓名中提取出姓
+train_test['Name2'] = train_test['Name'].apply(lambda x: x.split('.')[1])
 
-def forest():
-    predictors = ["Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Embarked"]
+#计算数量,然后合并数据集
+Name2_sum = train_test['Name2'].value_counts().reset_index()
+Name2_sum.columns=['Name2','Name2_sum']
+train_test = pd.merge(train_test,Name2_sum,how='left',on='Name2')
 
-    alg = RandomForestClassifier(random_state=1, n_estimators=10, min_samples_split=2, min_samples_leaf=1)
-    kf = model_selection.KFold(n_splits=3, shuffle=False, random_state=1)
+#由于出现一次时该特征时无效特征,用one来代替出现一次的姓
+train_test.loc[train_test['Name2_sum'] == 1 , 'Name2_new'] = 'one'
+train_test.loc[train_test['Name2_sum'] > 1 , 'Name2_new'] = train_test['Name2']
+del train_test['Name2']
 
-    scores = model_selection.cross_val_score(alg, data_train[predictors], data_train["Survived"], cv=kf)
-    print(scores)
-    # Take the mean of the scores (because we have one for each fold)
-    print(scores.mean())
+#分列处理
+train_test = pd.get_dummies(train_test,columns=['Name2_new'])
+#删掉姓名这个特征
+del train_test['Name']
 
-if __name__ == '__main__':
-    forest()
+#从上面的分析,发现该特征train集无miss值,test有一个缺失值,先查看
+train_test.loc[train_test["Fare"].isnull()]
+
+#用pclass=3和Embarked=S的平均数14.644083来填充
+train_test["Fare"].fillna(14.435422,inplace=True)
+
+#将Ticket提取字符列
+#str.isnumeric()  如果S中只有数字字符，则返回True，否则返回False
+train_test['Ticket_Letter'] = train_test['Ticket'].str.split().str[0]
+train_test['Ticket_Letter'] = train_test['Ticket_Letter'].apply(lambda x:np.nan if x.isnumeric() else x)
+train_test.drop('Ticket',inplace=True,axis=1)
+#分列,此时nan值可以不做处理
+train_test = pd.get_dummies(train_test,columns=['Ticket_Letter'],drop_first=True)
+
+
+# 所以用年龄是否缺失值来构造新特征
+train_test.loc[train_test["Age"].isnull() ,"age_nan"] = 1
+train_test.loc[train_test["Age"].notnull() ,"age_nan"] = 0
+train_test = pd.get_dummies(train_test,columns=['age_nan'])
+
+#创建没有['Age','Survived']的数据集
+missing_age = train_test.drop(['Survived','Cabin'],axis=1)
+#将Age完整的项作为训练集、将Age缺失的项作为测试集。
+missing_age_train = missing_age[missing_age['Age'].notnull()]
+missing_age_test = missing_age[missing_age['Age'].isnull()]
+#构建训练集合预测集的X和Y值
+missing_age_X_train = missing_age_train.drop(['Age'], axis=1)
+missing_age_Y_train = missing_age_train['Age']
+missing_age_X_test = missing_age_test.drop(['Age'], axis=1)
+# 先将数据标准化
