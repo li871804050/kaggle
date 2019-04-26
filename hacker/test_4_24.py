@@ -153,6 +153,7 @@ def sortColors(nums: [int]) -> None:
         else:
             i += 1
 
+#找数组中有一半以上重复的数
 def findMoreNum(nums:[int]):
     num = 0
     count = 0
