@@ -12,7 +12,7 @@ def bracket(s: str):
             formula_old = s[pos + 1: i]
             formula = getOneFormula(formula_old)
             if formula != formula_old:
-                if (i + 2 < len(s)):
+                if (i + 1 < len(s)):
                     s = s[: pos] + formula + s[i + 1:]
                     i = pos + len(formula) - 1
                 else:
@@ -100,7 +100,7 @@ def getLt(s: str):
 
 def getEq(s: str):
     s = s.replace(' ', '')
-    words = s.split('>')
+    words = s.split('=')
     return 'eq(%s, %s)' % (words[0], words[1])
 
 def getAND(s: str):
@@ -120,7 +120,7 @@ def getXOR(s: str):
 
 if __name__ == '__main__':
     # s = '(((45-new_days)/45)+1)'
-    s = 'IF(((2>4) AND (3>5)), 1, 4)'
+    s = 'IF((IF(((((45-new_day)/45) + 1)>8), (6 + (10*(1/2))), (7 + ((9/3)*4))) > 5), IF((7<9), ((tt - 13)*7), 2), IF((1=3),8, (ob*6*(3 + 4))))'
     print(bracket(s))
     # s = '02+03'
     # s = re.match('.*\+.*', s)
