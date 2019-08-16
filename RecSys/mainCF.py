@@ -5,20 +5,20 @@ Created on Tue Jan  2 20:36:48 2018
 @author: lanlandetian
 """
 
-import UserCF
-import UserCF_IIF
-import ItemCF
-import ItemCF_IUF
+import RecSys.UserCF
+import RecSys.UserCF_IIF
+import RecSys.ItemCF
+import RecSys.ItemCF_IUF
 import random
-import Evaluation
-import LFM
+import RecSys.Evaluation
+import RecSys.LFM
 
 import imp
-imp.reload(UserCF)
-imp.reload(ItemCF)
-imp.reload(ItemCF_IUF)
-imp.reload(Evaluation)
-imp.reload(LFM)
+imp.reload(RecSys.UserCF)
+imp.reload(RecSys.ItemCF)
+imp.reload(RecSys.ItemCF_IUF)
+imp.reload(RecSys.Evaluation)
+imp.reload(RecSys.LFM)
 
 
 def readData():

@@ -65,3 +65,14 @@ if __name__ == '__main__':
     # print(user)
     # print(time_range)
     print(get_item_popular_score())
+
+    item_data = pd.read_csv('data/tianchi_fresh_comp_train_item.csv', ',')
+    user_data = pd.read_csv('data/tianchi_fresh_comp_train_user.csv', ',')
+    # item_category 先不适用
+    # user_geohash
+    item_fields = ['item_id', 'item_category']
+    item_data = item_data[item_fields]
+    user_fields = ['user_id', 'item_id', 'behavior_type', 'time']
+    user_data = user_data[user_fields]
+
+    user_data.to_csv('data/user.csv',index=False,header=False)
